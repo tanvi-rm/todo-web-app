@@ -8,12 +8,16 @@ pipeline {
     }
     stage('Build Docker Image') {
       steps {
-        sh 'docker build -t task-manager-lite .'
+        bat 'docker build -t task-manager-lite .'
       }
     }
     stage('Run Docker Container') {
       steps {
-        sh 'docker run -d -p 8080:80 task-manager-lite || true'
+
+        bat '''
+        docker rm -f task-manager-lite || exit 0
+        docker run -d -p 8080:80 --name task-manager-lite task-manager-lite
+        '''
       }
     }
   }
